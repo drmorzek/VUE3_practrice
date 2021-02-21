@@ -27,7 +27,7 @@ export default {
                 commit('clearMessage', null, { root: true })
             } catch (e) { 
                 dispatch('setMessage', {
-                    value: error(e),
+                    value: error(e.response.data.error.message),
                     type: 'danger'
                 }, {root: true})
                 throw new Error()
