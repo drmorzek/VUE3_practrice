@@ -30,8 +30,14 @@ export function useLoginForm() {
     )
 
     const onSubmit = handleSubmit(async v => {
-        await store.dispatch('auth/login' , v)
-        router.push('/')
+        try{
+            await store.dispatch('auth/login', v)
+            router.push('/')
+        } catch (e) {
+
+        }
+        
+        
     })
 
     const isTooManyAttempts = computed(() => submitCount.value >= 4)

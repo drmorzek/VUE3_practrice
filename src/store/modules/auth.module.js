@@ -1,8 +1,12 @@
+import axios from 'axios'
+import {error} from '../../utils/error'
+const TOKEN_KEY = 'jwt-token'
+
 export default {
     namespaced: true,
     state(){
         return{
-            token: localStorage.getItem('jwt-token')
+            token: localStorage.getItem(TOKEN_KEY)
         }
     },
     getters: {
@@ -15,17 +19,28 @@ export default {
     },
     actions: {
         async login( { commit }, payload){
-            commit('setToken', 'TEST TOKEN')
+            try {
+                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_FB_KEY}`
+                const { data } = await axios.post(url, { ...payload, returnSecureToken: true})
+                
+                commit('setToken', data.idToken)
+            } catch (e) { 
+                console.log("Error:", error(e))
+                throw new Error()
+            }
+            
+            
+
         }
     },
     mutations:{
         setToken(state, token){
             state.token = token
-            localStorage.setItem('jwt-token', token)
+            localStorage.setItem(TOKEN_KEY, token)
         },
         logout(state) {
             state.token = null
-            localStorage.removeItem('jwt-token')
+            localStorage.removeItem(TOKEN_KEY)
         }
     }
 }
